@@ -18,9 +18,9 @@ data class CurrencyRecord(
     var updatedAt: String? = null,
     var currency: String? = null,
     var amount: Double? = null,
-    @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE])
+    @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "account_id")
-    var account: Account? = null,
+    private val account: Account? = null,
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long? = null

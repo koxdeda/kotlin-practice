@@ -6,6 +6,7 @@ import com.example.clientprofile.dtos.auth.SignInDto
 import com.example.clientprofile.jwt.JwtAuthentication
 import com.example.clientprofile.service.AuthService
 import lombok.RequiredArgsConstructor
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -16,10 +17,14 @@ import javax.servlet.http.HttpServletResponse
 @RequestMapping("auth")
 @RequiredArgsConstructor
 class AuthController(val authService: AuthService) {
+    private val log = LoggerFactory.getLogger(javaClass)
+
 
     @GetMapping("hello/user")
     fun helloUser(): ResponseEntity<String?>? {
         val authInfo: JwtAuthentication? = authService.getAuthInfo()
+        log.info("${authInfo?.isAuthenticated}")
+        log.info("${authInfo?.name}")
         return ResponseEntity.ok("Hello user! ${authInfo?.name}")
     }
 

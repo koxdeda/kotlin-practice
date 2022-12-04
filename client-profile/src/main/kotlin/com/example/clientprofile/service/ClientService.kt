@@ -12,5 +12,5 @@ interface ClientService {
     fun createClient(clientCreate: ClientCreateDto, response: HttpServletResponse): ClientCreateResponseDto
     fun getClient(id: Long): ClientDto
     fun updateClient(id: Long, dto: ClientUpdateDto): ClientCreateResponseDto
-    fun getAllClients(offset: Int, limit: Int): List<ClientDto> // TODO в параметры добавить paging
+    fun getAllClients(offset: Int, limit: Int): List<ClientDto>
 }

@@ -1,5 +1,6 @@
 package com.example.clientprofile.jwt
 
+import com.example.clientprofile.dtos.enums.Role
 import lombok.Getter
 import lombok.Setter
 import org.springframework.security.core.Authentication
@@ -11,8 +12,14 @@ import org.springframework.security.core.GrantedAuthority
 class JwtAuthentication : Authentication {
     private var authenticated = false
     private var username: String? = null
+    private var roles: Set<Role>? = null
+
     override fun getAuthorities(): Collection<GrantedAuthority?>? {
-        return null
+        return roles!!
+    }
+    @Throws(IllegalArgumentException::class)
+    fun setAuthorities(roles: Set<Role>): Set<Role> {
+        return roles
     }
 
     override fun getCredentials(): Any? {
@@ -23,8 +30,8 @@ class JwtAuthentication : Authentication {
         return null
     }
 
-    override fun getPrincipal(): Any {
-        return username!!
+    override fun getPrincipal(): Any? {
+        return null
     }
 
     override fun isAuthenticated(): Boolean {

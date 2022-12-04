@@ -4,6 +4,7 @@ import com.example.clientprofile.dtos.auth.JwtResponseDto
 import com.example.clientprofile.exception.ClientNotFoundException
 import com.example.clientprofile.exception.CredentialsNotValidException
 import com.example.clientprofile.jwt.JwtAuthentication
+import com.example.clientprofile.jwt.JwtFilter
 import com.example.clientprofile.jwt.JwtProvider
 import com.example.clientprofile.repository.ClientRepository
 import com.example.clientprofile.service.AuthService
@@ -21,7 +22,7 @@ import javax.servlet.http.HttpServletResponse
 class AuthServiceImpl(
     val clientRepository: ClientRepository,
     val passwordService: PasswordService,
-    val jwtProvider: JwtProvider
+    val jwtProvider: JwtProvider,
 ): AuthService {
 
     val refreshStorage: MutableMap<String, String> = HashMap()
@@ -33,22 +34,24 @@ class AuthServiceImpl(
             val accessToken = jwtProvider.generateAccessToken(client) // generate new access token
             val refreshToken = jwtProvider.generateRefreshToken(client)// generate new refresh token
             refreshStorage[client.phone!!] = refreshToken // save session TODO попробовать заменить на Redis
+
             val cookie = Cookie("AccessToken", accessToken)
             cookie.path = "/"//устанавливаем путь
-            cookie.maxAge = 300//здесь устанавливается время жизни куки
+            cookie.maxAge = JwtProvider.ACCESS_TOKEN_LIVE_TIME//здесь устанавливается время жизни куки
             response.addCookie(cookie) //добавляем Cookie в запрос
+
             val cookie1 = Cookie("RefreshToken", refreshToken)
             cookie1.path = "/"//устанавливаем путь
-            cookie1.maxAge = 86400 //здесь устанавливается время жизни куки
+            cookie1.maxAge = JwtProvider.REFRESH_TOKEN_LIVE_TIME //здесь устанавливается время жизни куки
             response.addCookie(cookie1) //добавляем Cookie в запрос
             response.contentType = "text/plain"//устанавливаем контекст
+
             JwtResponseDto("Bearer",accessToken, refreshToken) // response
         } else{
             throw CredentialsNotValidException("password")
         }
     }
 
-    // TODO сеттить токены в куки + MaxAge
     override fun getAccessToken(@NonNull refreshToken: String): JwtResponseDto {
     if (jwtProvider.validateRefreshToken(refreshToken)) { // Validate refreshToken
         val claims: Claims = jwtProvider.getRefreshClaims(refreshToken)!! // Get refreshToken claims

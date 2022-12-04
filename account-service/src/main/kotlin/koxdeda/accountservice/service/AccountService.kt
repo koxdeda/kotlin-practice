@@ -1,18 +1,18 @@
 package koxdeda.accountservice.service
 
-import koxdeda.accountservice.dtos.ClientOutboxDto
+import koxdeda.accountservice.dtos.AccountDto
+import koxdeda.accountservice.dtos.enums.CurrencyType
 import koxdeda.accountservice.model.Account
-import koxdeda.accountservice.model.Currency
-import koxdeda.accountservice.repository.AccountRepository
-import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.apache.kafka.common.protocol.types.ArrayOf
-import org.slf4j.LoggerFactory
-import org.springframework.kafka.annotation.KafkaListener
-import org.springframework.kafka.support.Acknowledgment
-import java.text.SimpleDateFormat
-import java.util.*
+import koxdeda.accountservice.model.CurrencyRecord
 
-class AccountService() {
+
+interface AccountService {
+    fun createAccount(clientId: Long): Account
+    fun getAccount(id: Long): AccountDto
+    fun changeBalance(clientId: Long, currency: CurrencyType, amount: Double): AccountDto
+
+    fun checkBalance(clientId: Long, cost: Double, currency: CurrencyType): Boolean
+
 
 }
 

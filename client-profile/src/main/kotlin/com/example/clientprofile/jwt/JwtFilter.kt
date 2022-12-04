@@ -23,14 +23,14 @@ class JwtFilter(private val jwtProvider: JwtProvider) : GenericFilterBean() {
 
     @Throws(IOException::class, ServletException::class)
     override fun doFilter(request: ServletRequest, response: ServletResponse, fc: FilterChain) {
+        log.info("Do filter")
         val token = getTokenFromRequest(request as HttpServletRequest)
-        log.info(token)
         if (token != null && jwtProvider.validateAccessToken(token)) {
             val claims = jwtProvider.getAccessClaims(token)
             val jwtInfoToken = JwtAuthentication()
             jwtInfoToken.isAuthenticated = true
             jwtInfoToken.name = claims!!["name", String::class.java]
-            SecurityContextHolder.getContext().authentication = jwtInfoToken
+            SecurityContextHolder.getContext().authentication = jwtInfoToken // set authenticated flag to SecurityContextHolder
         }
         fc.doFilter(request, response)
     }

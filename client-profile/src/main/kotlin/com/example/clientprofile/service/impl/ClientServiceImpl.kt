@@ -1,9 +1,6 @@
 package com.example.clientprofile.service.impl
 
-import com.example.clientprofile.dtos.client.ClientCreateDto
-import com.example.clientprofile.dtos.client.ClientCreateResponseDto
-import com.example.clientprofile.dtos.client.ClientDto
-import com.example.clientprofile.dtos.client.ClientUpdateDto
+import com.example.clientprofile.dtos.client.*
 import com.example.clientprofile.dtos.enums.Status
 import com.example.clientprofile.exception.*
 import com.example.clientprofile.model.*
@@ -18,6 +15,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.support.KafkaHeaders
+import org.springframework.messaging.Message
+import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.text.SimpleDateFormat
@@ -42,7 +42,6 @@ class ClientServiceImpl(val clientRepository: ClientRepository,
     val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
 
 
-    // TODO генерация простого jwt
     override fun createClient(clientCreate: ClientCreateDto, response: HttpServletResponse): ClientCreateResponseDto {
 
         if(clientCreateValidator.validClientCreate(clientCreate).isEmpty()){
@@ -78,19 +77,19 @@ class ClientServiceImpl(val clientRepository: ClientRepository,
             response.addCookie(cookie)
             response.contentType = "application/json"
 
-//        try {
-//            log.info("Saved a client to database")
-//            log.info("Sending message to Kafka {}", client.toClientOutboxDto())
-//            val message: Message<ClientOutboxDto> = MessageBuilder
-//                .withPayload(client.toClientOutboxDto())
-//                .setHeader(KafkaHeaders.TOPIC, topic)
-//                .setHeader("X-Custom-Header", "Custom header here")
-//                .build()
-//            kafkaTemplate.send(message)
-//            log.info("Message sent with success")
-//        } catch (e: Exception) {
-//            log.error("Exception: $e")
-//        }
+        try {
+            log.info("Saved a client to database")
+            log.info("Sending message to Kafka {}", client.toClientOutboxDto())
+            val message: Message<ClientOutboxDto> = MessageBuilder
+                .withPayload(client.toClientOutboxDto())
+                .setHeader(KafkaHeaders.TOPIC, topic)
+                .setHeader("X-Custom-Header", "Custom header here")
+                .build()
+            kafkaTemplate.send(message)
+            log.info("Message sent with success")
+        } catch (e: Exception) {
+            log.error("Exception: $e")
+        }
 
 
 
@@ -112,7 +111,6 @@ class ClientServiceImpl(val clientRepository: ClientRepository,
             ?: throw ClientNotFoundException("id")
     }
 
-    // TODO Добавить проверку jwt??
     override fun updateClient(id: Long, dto: ClientUpdateDto): ClientCreateResponseDto {
 
 

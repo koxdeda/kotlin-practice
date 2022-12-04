@@ -1,5 +1,6 @@
 package com.example.clientprofile.jwt
 
+import com.example.clientprofile.dtos.enums.Role
 import com.example.clientprofile.model.Client
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
@@ -33,22 +34,25 @@ class JwtProvider(
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret)) // and Keys.hmacShaKeyFo for Key object
     }
 
-    // TODO разобраться с датой
     fun generateAccessToken(client: Client): String{
         val currentDateTime = LocalDateTime.now() // take current dateTime
-        val accessExpirationInstant: Instant = currentDateTime.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant() // Set expiration datetime + 5 minutes
+        log.info(currentDateTime.toString())
+        val accessExpirationInstant: Instant = currentDateTime.plusSeconds(ACCESS_TOKEN_LIVE_TIME.toLong()).atZone(ZoneId.systemDefault()).toInstant() // Set expiration datetime + 5 minutes
+        log.info(accessExpirationInstant.toString())
         val accessException: Date = Date.from(accessExpirationInstant) // convert to data
+        log.info(accessException.toString())
         return Jwts.builder()
             .setSubject(client.phone) // set subject param
             .setExpiration(accessException) // set exp param
             .signWith(jwtAccessSecret) // sign token
             .claim("name", client.name) // set claim params
             .claim("status", client.status) // set claim params
+            .claim("roles", Role.ADMIN) // set claim params
             .compact()
     }
     fun generateRefreshToken(client: Client): String{
         val currentDateTime = LocalDateTime.now() // take current dateTime
-        val refreshExpirationInstant: Instant = currentDateTime.plusDays(1).atZone(ZoneId.systemDefault()).toInstant() // Set expiration datetime + 1 day
+        val refreshExpirationInstant: Instant = currentDateTime.plusSeconds(REFRESH_TOKEN_LIVE_TIME.toLong()).atZone(ZoneId.systemDefault()).toInstant() // Set expiration datetime + 1 day
         val refreshException: Date = Date.from(refreshExpirationInstant) // convert to data
         return Jwts.builder()
             .setSubject(client.phone) // set subject param
@@ -106,5 +110,9 @@ class JwtProvider(
             .body
     }
 
+    companion object{
+        const val ACCESS_TOKEN_LIVE_TIME = 1800
+        const val REFRESH_TOKEN_LIVE_TIME = 86400
+    }
 
 }

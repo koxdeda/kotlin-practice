@@ -60,5 +60,7 @@ data class Client(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long? = null,
+    @ElementCollection(targetClass=Integer::class)
+    val roles: Set<Role>? = null
 
     )

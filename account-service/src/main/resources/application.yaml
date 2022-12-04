@@ -2,12 +2,9 @@ kafka:
   bootstrapAddress: localhost:29092
   topics:
     topic: client-profile-outbox
+  group:
+    id: app.1
 
 logging:
   level:
     root: info
-
-
-
-
-
