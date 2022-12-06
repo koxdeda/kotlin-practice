@@ -28,6 +28,7 @@ class AccountController(
     }
 
     @GetMapping("/balance/check")
+    @ResponseStatus(HttpStatus.OK)
     fun checkBalance(
         @RequestParam("clientId") clientId: Long,
         @RequestParam("cost") cost: Double,
@@ -39,6 +40,7 @@ class AccountController(
 
 
     @PutMapping("/balance/change/{clientId}")
+
     fun changeBalance(
         @PathVariable("clientId") clientId: Long,
         @RequestParam("amount") amount: Double,

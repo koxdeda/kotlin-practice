@@ -29,7 +29,7 @@ class ClientProfileController(val clientService: ClientService) {
         return clientService.getClient(clientId)
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     fun getAllClients(@RequestParam("offset") offset: Int, @RequestParam("limit") limit: Int): List<ClientDto> {
         return clientService.getAllClients(offset, limit)
