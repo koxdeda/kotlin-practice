@@ -1,10 +1,13 @@
-package koxdeda.orderservice.dtos
+package koxdeda.accountservice.dtos
 
-import koxdeda.orderservice.dtos.enums.OrderStatus
+import koxdeda.accountservice.dtos.enums.OrderStatus
 
 
-data class OrderDto(
+
+data class OrderOutboxDto(
     val orderNumber: Int? = null,
+    val createdAt: String? = null,
+    val updatedAt: String? = null,
     val totalCost: Int? = null,
     val status : OrderStatus? = null,
     val productSku: Int? = null,
@@ -12,5 +15,5 @@ data class OrderDto(
     val amount: Int? = null,
     val productPrice: Int? = null,
     val clientId: Long? = null,
-
+    val id: Long? = null,
 )

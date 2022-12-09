@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface ProductRepository: JpaRepository<Product, Long?> {
     override fun findAll(pageable: Pageable): Page<Product>
+    fun getOneBySku(sku: Int): Product?
 }

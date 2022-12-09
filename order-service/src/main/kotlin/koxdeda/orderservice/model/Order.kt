@@ -15,7 +15,8 @@ fun Order.toOrderDto() = OrderDto(
     amount = amount,
     productName = productName,
     productPrice = productPrice,
-    productSku = productSku
+    productSku = productSku,
+    clientId = clientId
 
 )
 
@@ -36,6 +37,7 @@ data class Order(
     val productName: String? = null,
     val amount: Int? = null,
     val productPrice: Int? = null,
+    val clientId: Long? = null,
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long? = null

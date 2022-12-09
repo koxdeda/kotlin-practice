@@ -1,7 +1,7 @@
 package koxdeda.orderservice.service
 
 import koxdeda.orderservice.dtos.OrderDto
-import koxdeda.orderservice.dtos.enums.OrderCreateDto
+import koxdeda.orderservice.dtos.OrderCreateDto
 
 
 interface OrderService {

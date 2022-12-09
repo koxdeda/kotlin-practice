@@ -1,6 +1,8 @@
 package koxdeda.accountservice.infra
 
 import koxdeda.accountservice.dtos.ClientOutboxDto
+import koxdeda.accountservice.dtos.OrderOutboxDto
+import koxdeda.accountservice.dtos.enums.CurrencyType
 import koxdeda.accountservice.service.AccountService
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
@@ -14,8 +16,8 @@ import kotlin.math.log
 class Consumer(val accountService: AccountService) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @KafkaListener(topics = ["\${kafka.topics.topic}"], groupId = "\${kafka.group.id}")
-    fun listenGroupFoo(consumerRecord: ConsumerRecord<Any, Any>, ack: Acknowledgment) {
+    @KafkaListener(topics = ["\${kafka.topics.client-profile-outbox}"], groupId = "\${kafka.group.id}")
+    fun listenGroupClientOutbox(consumerRecord: ConsumerRecord<Any, Any>, ack: Acknowledgment) {
         log.info("Message received {}", consumerRecord)
         println("Message received $consumerRecord")
         println("Message value is: ${consumerRecord.value()}")
@@ -25,11 +27,27 @@ class Consumer(val accountService: AccountService) {
 
         ack.acknowledge()
 
-        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
 
         clientOutboxDto.id?.let {
                 log.info("Run create Account")
                 accountService.createAccount(clientOutboxDto.id)
+        }
+    }
+
+    @KafkaListener(topics = ["\${kafka.topics.order-service-outbox}"], groupId = "\${kafka.group.id}")
+    fun listenGroupOrderOutbox(consumerRecord: ConsumerRecord<Any, Any>, ack: Acknowledgment) {
+        log.info("Message received {}", consumerRecord)
+        println("Message received $consumerRecord")
+        println("Message value is: ${consumerRecord.value()}")
+
+        val orderOutboxDto = consumerRecord.value() as OrderOutboxDto
+        println("ID is - ${orderOutboxDto.id}")
+
+        ack.acknowledge()
+
+        orderOutboxDto.id?.let {
+            log.info("Run update Account")
+            orderOutboxDto.clientId?.let { it1 -> accountService.changeBalance(it1, CurrencyType.RUR, -orderOutboxDto.totalCost!!.toDouble()) }
         }
     }
 }

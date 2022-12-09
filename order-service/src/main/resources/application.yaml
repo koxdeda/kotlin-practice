@@ -1,8 +1,6 @@
 kafka:
   bootstrapAddress: localhost:29092
   topics:
-    account-service-outbox: account-service-outbox
-    client-profile-outbox: client-profile-outbox
     order-service-outbox: order-service-outbox
 
   group:

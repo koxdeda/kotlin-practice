@@ -77,22 +77,7 @@ class ClientServiceImpl(val clientRepository: ClientRepository,
             response.addCookie(cookie)
             response.contentType = "application/json"
 
-        try {
-            log.info("Saved a client to database")
-            log.info("Sending message to Kafka {}", client.toClientOutboxDto())
-            val message: Message<ClientOutboxDto> = MessageBuilder
-                .withPayload(client.toClientOutboxDto())
-                .setHeader(KafkaHeaders.TOPIC, topic)
-                .setHeader("X-Custom-Header", "Custom header here")
-                .build()
-            kafkaTemplate.send(message)
-            log.info("Message sent with success")
-        } catch (e: Exception) {
-            log.error("Exception: $e")
-        }
-
-
-
+            sendClientOutbox(client.toClientOutboxDto())
 
             return client.toClientCreateResponseDto().apply {
                 success = true
@@ -100,8 +85,22 @@ class ClientServiceImpl(val clientRepository: ClientRepository,
                 resulDescription = "CLIENT_CREATED"
             }
         }else throw ValidationError(clientCreateValidator.validClientCreate(clientCreate))
+    }
 
-
+    fun sendClientOutbox(message: ClientOutboxDto) {
+        try {
+            log.info("Saved a client to database")
+            log.info("Sending message to Kafka {}", message)
+            val sendingMessage: Message<ClientOutboxDto> = MessageBuilder
+                .withPayload(message)
+                .setHeader(KafkaHeaders.TOPIC, topic)
+                .setHeader("X-Custom-Header", "Custom header here")
+                .build()
+            kafkaTemplate.send(sendingMessage)
+            log.info("Message sent with success")
+        } catch (e: Exception) {
+            log.error("Exception: $e")
+        }
     }
 
     override fun getClient(id: Long): ClientDto {
@@ -112,7 +111,6 @@ class ClientServiceImpl(val clientRepository: ClientRepository,
     }
 
     override fun updateClient(id: Long, dto: ClientUpdateDto): ClientCreateResponseDto {
-
 
         val client = clientRepository.findByIdOrNull(id) ?: throw ClientNotFoundException("id")
 

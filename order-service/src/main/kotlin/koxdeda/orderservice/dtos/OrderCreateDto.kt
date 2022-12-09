@@ -1,4 +1,4 @@
-package koxdeda.orderservice.dtos.enums
+package koxdeda.orderservice.dtos
 
 data class OrderCreateDto(
     val orderNumber: Int? = null,
@@ -7,5 +7,6 @@ data class OrderCreateDto(
     val productName: String? = null,
     val amount: Int? = null,
     val productPrice: Int? = null,
+    val clientId: Long? = null,
 )
 

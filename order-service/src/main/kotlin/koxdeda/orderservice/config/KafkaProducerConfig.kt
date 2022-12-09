@@ -1,6 +1,6 @@
-package com.example.clientprofile.config
+package koxdeda.orderservice.config
 
-import com.example.clientprofile.dtos.serializer.ClientSerializer
+import koxdeda.orderservice.dtos.serializer.OrderSerializer
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.beans.factory.annotation.Value
@@ -22,7 +22,7 @@ class KafkaProducerConfig(
         val configProps: MutableMap<String, Any> = HashMap()
         configProps[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = servers
         configProps[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
-        configProps[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = ClientSerializer::class.java
+        configProps[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = OrderSerializer::class.java
         return DefaultKafkaProducerFactory(configProps)
     }
 

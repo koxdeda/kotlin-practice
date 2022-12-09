@@ -9,6 +9,8 @@ interface ProductService {
 
     fun updateProduct(productId: Long, createProduct: ProductDto): ProductDto
 
+    fun updateProductQuantity(sku: Int, quantity: Int): ProductDto
+
     fun getProduct(id: Long): ProductDto
 
     fun getAllProducts(offset: Int, limit: Int): List<ProductDto>

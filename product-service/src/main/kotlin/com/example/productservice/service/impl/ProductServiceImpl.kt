@@ -51,6 +51,20 @@ class ProductServiceImpl(
         }
     }
 
+    override fun updateProductQuantity(sku: Int, quantity: Int): ProductDto {
+            var product = productRepository.getOneBySku(sku) ?: throw ProductNotFoundException("id")
+            product = Product(
+                product.sku,
+                product.name,
+                product.description,
+                product.price,
+                product.quantity?.minus(quantity),
+                product.id
+            )
+            productRepository.save(product)
+            return product.toProductDto()
+    }
+
     override fun getProduct(id: Long): ProductDto {
         return productRepository.findByIdOrNull(id)?.toProductDto() ?: throw ProductNotFoundException("id")
     }

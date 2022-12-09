@@ -1,7 +1,7 @@
 package koxdeda.orderservice.controller
 
 import koxdeda.orderservice.dtos.OrderDto
-import koxdeda.orderservice.dtos.enums.OrderCreateDto
+import koxdeda.orderservice.dtos.OrderCreateDto
 import koxdeda.orderservice.service.OrderService
 import lombok.RequiredArgsConstructor
 import org.slf4j.LoggerFactory

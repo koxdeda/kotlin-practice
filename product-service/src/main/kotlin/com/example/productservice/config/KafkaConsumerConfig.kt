@@ -1,7 +1,6 @@
-package koxdeda.accountservice.config
+package com.example.productservice.config
 
-import koxdeda.accountservice.dtos.deserializer.ClientDeserializer
-import koxdeda.accountservice.dtos.deserializer.OrderDeserializer
+import com.example.productservice.dtos.deserializer.OrderDeserializer
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
@@ -26,7 +25,6 @@ class KafkaConsumerConfig(
         props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = servers
         props[ConsumerConfig.GROUP_ID_CONFIG] = "ppr"
         props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
-        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = ClientDeserializer::class.java
         props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = OrderDeserializer::class.java
         props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
         return DefaultKafkaConsumerFactory(props)
