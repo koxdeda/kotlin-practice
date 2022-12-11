@@ -1,6 +1,5 @@
 package com.example.productservice.exception
 
-import com.example.productservice.exception.ApiError
 import org.springframework.http.HttpStatus
 
 abstract class BaseException(

@@ -2,7 +2,12 @@ package koxdeda.orderservice.service.impl
 
 import koxdeda.orderservice.dtos.OrderDto
 import koxdeda.orderservice.dtos.OrderCreateDto
+import koxdeda.orderservice.dtos.enums.CurrencyType
 import koxdeda.orderservice.dtos.enums.OrderStatus
+import koxdeda.orderservice.exception.ValidationException
+import koxdeda.orderservice.feign.AccountServiceFeignClient
+import koxdeda.orderservice.feign.ClientServiceFeignClient
+import koxdeda.orderservice.feign.ProductServiceFeignClient
 import koxdeda.orderservice.model.Order
 import koxdeda.orderservice.model.toOrderDto
 import koxdeda.orderservice.repository.OrderRepository
@@ -26,13 +31,25 @@ class OrderServiceImpl(
     @Value("\${kafka.topics.order-service-outbox}") val topic: String,
     @Autowired
     private val kafkaTemplate: KafkaTemplate<String, Any>,
+    @Autowired
+    private val accountServiceFeignClient: AccountServiceFeignClient,
+    @Autowired
+    private val clientServiceFeignClient: ClientServiceFeignClient,
+    @Autowired
+    private val productServiceFeignClient: ProductServiceFeignClient
 ): OrderService {
     private val log = LoggerFactory.getLogger(javaClass)
     val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
 
-    // TODO Добавить проверку наличия товара (в product-service) и доступных средств (в account-service)
-    override fun createOrder(createOrder: OrderCreateDto): OrderDto {
+    // TODO добавить корутины
+    override fun createOrder(bearerToken: String, createOrder: OrderCreateDto): OrderDto {
+
         createOrder.apply {
+
+            if(productServiceFeignClient.getProduct(productSku!!, amount!!)
+                && clientId?.let { accountServiceFeignClient.checkBalance(it, totalCost!!.toDouble(), CurrencyType.RUR) } == true
+                && clientServiceFeignClient.getClientById(bearerToken, clientId) != null){
+
             val order = Order(
                 orderNumber,
                 sdf.format(Date()),
@@ -47,9 +64,13 @@ class OrderServiceImpl(
             )
             productRepository.save(order)
 
-            sendOrderOutbox(order)
+            //sendOrderOutbox(order)
 
             return order.toOrderDto()
+
+            }else {
+                return throw ValidationException("")
+            }
         }
     }
 

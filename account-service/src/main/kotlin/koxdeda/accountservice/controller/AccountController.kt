@@ -2,8 +2,6 @@ package koxdeda.accountservice.controller
 
 import koxdeda.accountservice.dtos.AccountDto
 import koxdeda.accountservice.dtos.enums.CurrencyType
-import koxdeda.accountservice.model.Account
-import koxdeda.accountservice.model.CurrencyRecord
 import koxdeda.accountservice.service.AccountService
 import lombok.RequiredArgsConstructor
 import org.slf4j.LoggerFactory
@@ -40,7 +38,7 @@ class AccountController(
 
 
     @PutMapping("/balance/change/{clientId}")
-
+    @ResponseStatus(HttpStatus.OK)
     fun changeBalance(
         @PathVariable("clientId") clientId: Long,
         @RequestParam("amount") amount: Double,

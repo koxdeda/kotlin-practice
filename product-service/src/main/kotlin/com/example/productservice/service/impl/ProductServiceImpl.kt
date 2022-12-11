@@ -52,7 +52,7 @@ class ProductServiceImpl(
     }
 
     override fun updateProductQuantity(sku: Int, quantity: Int): ProductDto {
-            var product = productRepository.getOneBySku(sku) ?: throw ProductNotFoundException("id")
+            var product = productRepository.getOneBySku(sku) ?: throw ProductNotFoundException("sku")
             product = Product(
                 product.sku,
                 product.name,
@@ -67,6 +67,11 @@ class ProductServiceImpl(
 
     override fun getProduct(id: Long): ProductDto {
         return productRepository.findByIdOrNull(id)?.toProductDto() ?: throw ProductNotFoundException("id")
+    }
+
+    override fun isInStock(sku: Int, amount: Int): Boolean {
+        val product = productRepository.getOneBySku(sku) ?: return false
+        return product.quantity!! >= amount
     }
 
     override fun getAllProducts(offset: Int, limit: Int): List<ProductDto> {

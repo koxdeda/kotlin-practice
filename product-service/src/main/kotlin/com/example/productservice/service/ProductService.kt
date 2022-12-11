@@ -1,7 +1,6 @@
 package com.example.productservice.service
 
 import com.example.productservice.dtos.ProductDto
-import com.example.productservice.model.Product
 
 interface ProductService {
 
@@ -12,6 +11,8 @@ interface ProductService {
     fun updateProductQuantity(sku: Int, quantity: Int): ProductDto
 
     fun getProduct(id: Long): ProductDto
+
+    fun isInStock(sku: Int, amount: Int): Boolean
 
     fun getAllProducts(offset: Int, limit: Int): List<ProductDto>
 

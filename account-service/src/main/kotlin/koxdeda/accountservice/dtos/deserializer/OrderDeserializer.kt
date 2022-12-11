@@ -1,7 +1,6 @@
 package koxdeda.accountservice.dtos.deserializer
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import koxdeda.accountservice.dtos.ClientOutboxDto
 import koxdeda.accountservice.dtos.OrderOutboxDto
 import org.apache.kafka.common.errors.SerializationException
 import org.apache.kafka.common.serialization.Deserializer

@@ -1,5 +1,6 @@
 package koxdeda.accountservice.model
 
+import koxdeda.accountservice.dtos.enums.CurrencyType
 import lombok.AllArgsConstructor
 import lombok.Getter
 import lombok.NoArgsConstructor

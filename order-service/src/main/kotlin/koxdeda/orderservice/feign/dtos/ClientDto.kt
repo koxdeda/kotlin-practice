@@ -1,6 +1,6 @@
-package com.example.clientprofile.dtos.client
+package koxdeda.orderservice.feign.dtos
 
-import com.example.clientprofile.dtos.enums.Status
+
 
 
 data class ClientDto(

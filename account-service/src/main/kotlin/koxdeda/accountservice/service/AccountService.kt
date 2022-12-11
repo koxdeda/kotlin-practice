@@ -3,7 +3,6 @@ package koxdeda.accountservice.service
 import koxdeda.accountservice.dtos.AccountDto
 import koxdeda.accountservice.dtos.enums.CurrencyType
 import koxdeda.accountservice.model.Account
-import koxdeda.accountservice.model.CurrencyRecord
 
 
 interface AccountService {

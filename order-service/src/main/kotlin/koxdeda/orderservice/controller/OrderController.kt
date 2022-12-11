@@ -19,8 +19,8 @@ class OrderController(
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createOrder(@RequestBody createOrder: OrderCreateDto): OrderDto {
-        return orderService.createOrder(createOrder)
+    fun createOrder(@RequestHeader("Authorization") bearerToken: String, @RequestBody createOrder: OrderCreateDto): OrderDto {
+        return orderService.createOrder(bearerToken, createOrder)
     }
 
 

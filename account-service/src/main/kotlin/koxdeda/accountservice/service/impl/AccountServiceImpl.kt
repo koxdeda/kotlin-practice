@@ -78,7 +78,7 @@ class AccountServiceImpl(
 
             val response = accountRepository.findByClientId(clientId)!!.toAccountDto()
 
-            sendAccountOutbox(response)
+            //sendAccountOutbox(response)
 
             response
 
@@ -103,11 +103,12 @@ class AccountServiceImpl(
     }
 
 
-        // works correct
+        // TODO поиск currencyRecord по аккаунту и конкретной валюте
     override fun checkBalance(clientId: Long, cost: Double, currency: CurrencyType): Boolean {
         val account = accountRepository.findByClientId(clientId)
         if (account != null) {
-            val currencyRecord = account.let { currencyRecordRepository.findByAccount(it) }
+            log.info(currency.toString())
+            val currencyRecord = account.let { currencyRecordRepository.findByAccount(it, currency.toString()) }
             if (currencyRecord != null) {
                 return currencyRecord.amount!! >= cost
             } else {

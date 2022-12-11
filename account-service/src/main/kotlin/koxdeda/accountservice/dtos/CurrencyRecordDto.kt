@@ -1,12 +1,13 @@
 package koxdeda.accountservice.dtos
 
+import koxdeda.accountservice.dtos.enums.CurrencyType
 import koxdeda.accountservice.model.CurrencyRecord
 
 fun CurrencyRecord.toCurrencyRecordDto() = CurrencyRecordDto(
     id = id,
     createdAt = createdAt,
     updatedAt = updatedAt,
-    currency = currency,
+    currency = currency.toString(),
     amount = amount
 
 )

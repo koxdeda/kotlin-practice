@@ -37,6 +37,12 @@ class ProductController(
         return productService.getProduct(productId)
     }
 
+    @GetMapping("/available")
+    @ResponseStatus(HttpStatus.OK)
+    fun getProduct(@RequestParam sku: Int, amount: Int): Boolean {
+        return productService.isInStock(sku, amount)
+    }
+
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     fun getAllProducts(

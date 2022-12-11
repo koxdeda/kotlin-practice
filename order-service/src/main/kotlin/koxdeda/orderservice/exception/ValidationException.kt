@@ -1,16 +1,17 @@
-package com.example.clientprofile.exception
+package koxdeda.orderservice.exception
 
 import org.springframework.http.HttpStatus
 
-class CredentialsNotValidException(field: String): BaseException(
+class ValidationException(field: String): BaseException(
     HttpStatus.BAD_REQUEST,
     ApiError(
         type = "BAD_REQUEST",
         errors = arrayListOf(
             ErrorDto(
-                "CREDENTIALS_NOT_VALID",
+                "VALIDATION_ERROR",
                 ErrorType.ERROR,
-                "Credentials not valid",
+                "Error when validate order parameters",
                 field))
-    )
-)
+            )
+        ) {
+}
