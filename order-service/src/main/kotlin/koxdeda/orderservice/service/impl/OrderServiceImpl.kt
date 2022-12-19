@@ -1,5 +1,6 @@
 package koxdeda.orderservice.service.impl
 
+import kotlinx.coroutines.*
 import koxdeda.orderservice.dtos.OrderDto
 import koxdeda.orderservice.dtos.OrderCreateDto
 import koxdeda.orderservice.dtos.enums.CurrencyType
@@ -8,6 +9,7 @@ import koxdeda.orderservice.exception.ValidationException
 import koxdeda.orderservice.feign.AccountServiceFeignClient
 import koxdeda.orderservice.feign.ClientServiceFeignClient
 import koxdeda.orderservice.feign.ProductServiceFeignClient
+import koxdeda.orderservice.feign.dtos.ClientDto
 import koxdeda.orderservice.model.Order
 import koxdeda.orderservice.model.toOrderDto
 import koxdeda.orderservice.repository.OrderRepository
@@ -42,37 +44,59 @@ class OrderServiceImpl(
     val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
 
     // TODO добавить корутины
-    override fun createOrder(bearerToken: String, createOrder: OrderCreateDto): OrderDto {
+    override suspend fun createOrder(bearerToken: String, createOrder: OrderCreateDto): OrderDto  {
 
         createOrder.apply {
+            if (checkOrderParams(bearerToken, createOrder) == true) {
+                log.info("Got response from coroutine")
+                val order = Order(
+                    orderNumber,
+                    sdf.format(Date()),
+                    sdf.format(Date()),
+                    totalCost,
+                    OrderStatus.CREATED,
+                    productSku,
+                    productName,
+                    amount,
+                    productPrice,
+                    clientId
+                )
+                productRepository.save(order)
 
-            if(productServiceFeignClient.getProduct(productSku!!, amount!!)
-                && clientId?.let { accountServiceFeignClient.checkBalance(it, totalCost!!.toDouble(), CurrencyType.RUR) } == true
-                && clientServiceFeignClient.getClientById(bearerToken, clientId) != null){
+                sendOrderOutbox(order)
 
-            val order = Order(
-                orderNumber,
-                sdf.format(Date()),
-                sdf.format(Date()),
-                totalCost,
-                OrderStatus.CREATED,
-                productSku,
-                productName,
-                amount,
-                productPrice,
-                clientId
-            )
-            productRepository.save(order)
-
-            //sendOrderOutbox(order)
-
-            return order.toOrderDto()
-
-            }else {
-                return throw ValidationException("")
+                return order.toOrderDto()
+            } else {
+                throw ValidationException("")
             }
         }
     }
+
+    suspend fun checkOrderParams(bearerToken: String, createOrder: OrderCreateDto) = coroutineScope {
+        log.info("Go to checkParams")
+        createOrder.apply {
+            log.info("Go to check product")
+            val isProductAvailable = async { productServiceFeignClient.getProduct(productSku!!, amount!!) }
+            log.info("Go to check account")
+            val balanceAvailable = async {
+                accountServiceFeignClient.checkBalance(
+                    clientId!!,
+                    totalCost!!.toDouble(),
+                    CurrencyType.RUR
+                )
+            }
+            log.info("Go to check client")
+            val isClientExists = async { clientServiceFeignClient.getClientById(bearerToken, clientId!!) }
+
+            return@coroutineScope isValidOrder(isProductAvailable.await(), balanceAvailable.await(), isClientExists.await())
+
+        }
+    }
+    suspend fun isValidOrder(p: Boolean, a: Boolean, c: ClientDto?) = runBlocking {
+        return@runBlocking p && a && c != null
+    }
+
+
 
     fun sendOrderOutbox(message: Order) {
         try {

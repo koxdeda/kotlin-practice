@@ -2,8 +2,6 @@ package koxdeda.accountservice.dtos
 
 import koxdeda.accountservice.dtos.enums.OrderStatus
 
-
-
 data class OrderOutboxDto(
     val orderNumber: Int? = null,
     val createdAt: String? = null,

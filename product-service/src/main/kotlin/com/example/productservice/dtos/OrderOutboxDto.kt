@@ -1,6 +1,6 @@
 package com.example.productservice.dtos
 
-import koxdeda.orderservice.dtos.enums.OrderStatus
+import com.example.productservice.dtos.enums.OrderStatus
 
 
 data class OrderOutboxDto(

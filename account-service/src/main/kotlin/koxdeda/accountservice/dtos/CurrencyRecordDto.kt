@@ -1,6 +1,5 @@
 package koxdeda.accountservice.dtos
 
-import koxdeda.accountservice.dtos.enums.CurrencyType
 import koxdeda.accountservice.model.CurrencyRecord
 
 fun CurrencyRecord.toCurrencyRecordDto() = CurrencyRecordDto(

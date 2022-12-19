@@ -3,7 +3,6 @@ package com.example.productservice.controller
 import com.example.productservice.dtos.ProductDto
 import com.example.productservice.service.ProductService
 import lombok.RequiredArgsConstructor
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
@@ -13,8 +12,6 @@ import org.springframework.web.bind.annotation.*
 class ProductController(
     val productService: ProductService
 ) {
-    private val log = LoggerFactory.getLogger(javaClass)
-
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
@@ -31,11 +28,11 @@ class ProductController(
         return productService.updateProduct(productId, updateProduct)
     }
 
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    fun getProduct(@PathVariable("id") productId: Long): ProductDto {
-        return productService.getProduct(productId)
-    }
+//    @GetMapping("/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    fun getProduct(@PathVariable("id") productId: Long): ProductDto {
+//        return productService.getProduct(productId)
+//    }
 
     @GetMapping("/available")
     @ResponseStatus(HttpStatus.OK)

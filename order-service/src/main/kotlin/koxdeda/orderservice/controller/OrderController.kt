@@ -4,7 +4,6 @@ import koxdeda.orderservice.dtos.OrderDto
 import koxdeda.orderservice.dtos.OrderCreateDto
 import koxdeda.orderservice.service.OrderService
 import lombok.RequiredArgsConstructor
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
@@ -14,12 +13,9 @@ import org.springframework.web.bind.annotation.*
 class OrderController(
     val orderService: OrderService
 ) {
-    private val log = LoggerFactory.getLogger(javaClass)
-
-
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createOrder(@RequestHeader("Authorization") bearerToken: String, @RequestBody createOrder: OrderCreateDto): OrderDto {
+    suspend fun createOrder(@RequestHeader("Authorization") bearerToken: String, @RequestBody createOrder: OrderCreateDto): OrderDto {
         return orderService.createOrder(bearerToken, createOrder)
     }
 

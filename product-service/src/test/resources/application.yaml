@@ -1,0 +1,13 @@
+kafka:
+  bootstrapAddress: localhost:29092
+  topics:
+    order-service-outbox: order-service-outbox
+    product-service-outbox: product-service-outbox
+
+
+  group:
+    id: app.1
+
+logging:
+  level:
+    root: info

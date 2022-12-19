@@ -1,4 +1,4 @@
-package koxdeda.orderservice.dtos.enums
+package com.example.productservice.dtos.enums
 
 enum class OrderStatus {
     CREATED, CANCELLED, COMPLETED

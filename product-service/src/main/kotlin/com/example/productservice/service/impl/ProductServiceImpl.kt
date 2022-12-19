@@ -1,6 +1,7 @@
 package com.example.productservice.service.impl
 
 import com.example.productservice.dtos.ProductDto
+import com.example.productservice.exception.ProductAlreadyExist
 import com.example.productservice.exception.ProductNotFoundException
 import com.example.productservice.model.Product
 import com.example.productservice.model.toProductDto
@@ -17,17 +18,22 @@ import org.springframework.transaction.annotation.Transactional
 class ProductServiceImpl(
     private val productRepository: ProductRepository
 ): ProductService {
+
     private val log = LoggerFactory.getLogger(javaClass)
 
-
     override fun createProduct(createProduct: ProductDto): ProductDto {
+
         createProduct.apply {
+
+            if(productRepository.getOneBySku(sku!!) != null){
+                throw ProductAlreadyExist("sku")
+            }
             val product = Product(
             sku,
-            name,
-            description,
-            price,
-            quantity
+            name ?: "test",
+            description ?: "test",
+            price ?: 100,
+            quantity ?: 20
             )
             productRepository.save(product)
             return product.toProductDto()
@@ -76,7 +82,9 @@ class ProductServiceImpl(
 
     override fun getAllProducts(offset: Int, limit: Int): List<ProductDto> {
         val pageIndex = offset/limit
-        return productRepository.findAll(PageRequest.of(pageIndex ,limit)).map { it.toProductDto() }.toList()
+        val result = productRepository.findAll(PageRequest.of(pageIndex ,limit)).map { it.toProductDto() }.toList()
+        log.info("$result")
+        return result
     }
 
 }

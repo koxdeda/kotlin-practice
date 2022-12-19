@@ -16,6 +16,7 @@ fun Product.toProductDto() = ProductDto(
     description = description,
     price = price,
     quantity = quantity,
+    id = id
 )
 
 

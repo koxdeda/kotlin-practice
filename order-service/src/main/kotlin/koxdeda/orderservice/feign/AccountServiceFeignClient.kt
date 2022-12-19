@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam
 interface AccountServiceFeignClient {
 
     @GetMapping("/balance/check")
-    fun checkBalance(@RequestParam("clientId") clientId: Long,
+    suspend fun checkBalance(@RequestParam("clientId") clientId: Long,
                      @RequestParam("cost") cost: Double,
                      @RequestParam("currency") currency: CurrencyType
     ) : Boolean

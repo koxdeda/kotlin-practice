@@ -6,6 +6,6 @@ import koxdeda.orderservice.dtos.OrderCreateDto
 
 interface OrderService {
 
-    fun createOrder(bearerToken: String, createOrder: OrderCreateDto): OrderDto
+    suspend fun createOrder(bearerToken: String, createOrder: OrderCreateDto): OrderDto
 
 }

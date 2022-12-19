@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam
 interface ProductServiceFeignClient {
 
     @GetMapping("/available")
-    fun getProduct(@RequestParam("sku") sku: Int,@RequestParam("amount") amount: Int): Boolean
+    suspend fun getProduct(@RequestParam("sku") sku: Int,@RequestParam("amount") amount: Int): Boolean
 
 }

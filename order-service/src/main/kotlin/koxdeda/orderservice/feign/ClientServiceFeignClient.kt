@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RequestHeader
 interface ClientServiceFeignClient {
 
     @GetMapping("/{clientId}")
-    fun getClientById(@RequestHeader("Authorization") bearerToken: String, @PathVariable("clientId") clientId: Long): ClientDto?
+    suspend fun getClientById(@RequestHeader("Authorization") bearerToken: String, @PathVariable("clientId") clientId: Long): ClientDto?
 }

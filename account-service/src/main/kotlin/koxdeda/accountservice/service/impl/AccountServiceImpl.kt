@@ -34,7 +34,7 @@ class AccountServiceImpl(
     private val log = LoggerFactory.getLogger(javaClass)
     private val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
 
-    // listen client-service outbox. works correct
+
     override fun createAccount(clientId: Long): Account{
         val isAccountExist = accountRepository.findByClientId(clientId)
         if (isAccountExist == null){
@@ -57,7 +57,7 @@ class AccountServiceImpl(
     // TODO как-то правильно считать общий balance + отдебажить получение сообщения из kafka
     override fun changeBalance(clientId: Long, currency: CurrencyType, amount: Double): AccountDto{
         log.info("$clientId\n$currency\n$amount")
-        var account = accountRepository.findByClientId(clientId)
+        val account = accountRepository.findByClientId(clientId)
         log.info("tut ok? - ok")
         return if (account != null){
             log.info("Tut oshibka")
@@ -78,7 +78,7 @@ class AccountServiceImpl(
 
             val response = accountRepository.findByClientId(clientId)!!.toAccountDto()
 
-            //sendAccountOutbox(response)
+            sendAccountOutbox(response)
 
             response
 

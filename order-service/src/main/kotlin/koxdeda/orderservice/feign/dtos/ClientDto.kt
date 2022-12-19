@@ -1,8 +1,5 @@
 package koxdeda.orderservice.feign.dtos
 
-
-
-
 data class ClientDto(
 
     var name: String? = null,

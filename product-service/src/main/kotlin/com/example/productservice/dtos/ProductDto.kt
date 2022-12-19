@@ -9,4 +9,5 @@ data class ProductDto(
     val description: String? = null,
     val price: Int? = null,
     val quantity: Int? = null,
+    val id: Long? = null
 )
