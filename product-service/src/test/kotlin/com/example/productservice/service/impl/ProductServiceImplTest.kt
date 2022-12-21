@@ -23,7 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner
 @RunWith(SpringRunner::class)
 @SpringBootTest
 @TestPropertySource("/application.properties")
-@Sql(value = ["/delete-before-each-test.sql"], executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = ["/delete-after-each-test.sql"], executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class ProductServiceImplTest {
 
     private val log = LoggerFactory.getLogger(javaClass)

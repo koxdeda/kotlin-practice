@@ -28,15 +28,15 @@ class ProductController(
         return productService.updateProduct(productId, updateProduct)
     }
 
-//    @GetMapping("/{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    fun getProduct(@PathVariable("id") productId: Long): ProductDto {
-//        return productService.getProduct(productId)
-//    }
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun getProduct(@PathVariable("id") productId: Long): ProductDto {
+        return productService.getProduct(productId)
+    }
 
     @GetMapping("/available")
     @ResponseStatus(HttpStatus.OK)
-    fun getProduct(@RequestParam sku: Int, amount: Int): Boolean {
+    fun isInStock(@RequestParam sku: Int, amount: Int): Boolean {
         return productService.isInStock(sku, amount)
     }
 

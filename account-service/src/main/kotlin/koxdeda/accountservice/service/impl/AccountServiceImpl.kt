@@ -4,6 +4,7 @@ import koxdeda.accountservice.dtos.AccountDto
 import koxdeda.accountservice.dtos.enums.CurrencyType
 import koxdeda.accountservice.exception.AccountAlreadyExistException
 import koxdeda.accountservice.exception.AccountNotFoundException
+import koxdeda.accountservice.exception.CurrencyNotFoundException
 import koxdeda.accountservice.model.Account
 import koxdeda.accountservice.model.CurrencyRecord
 import koxdeda.accountservice.model.toAccountDto
@@ -13,7 +14,6 @@ import koxdeda.accountservice.service.AccountService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.Message
@@ -105,14 +105,17 @@ class AccountServiceImpl(
 
         // TODO поиск currencyRecord по аккаунту и конкретной валюте
     override fun checkBalance(clientId: Long, cost: Double, currency: CurrencyType): Boolean {
+            log.info("Start check balance")
         val account = accountRepository.findByClientId(clientId)
         if (account != null) {
+            log.info("Account found")
             log.info(currency.toString())
             val currencyRecord = account.let { currencyRecordRepository.findByAccount(it, currency.toString()) }
             if (currencyRecord != null) {
+                log.info("Currency found - ${currencyRecord.amount}")
                 return currencyRecord.amount!! >= cost
             } else {
-                throw NotFoundException()
+                throw CurrencyNotFoundException("currency")
             }
         }else {
             throw AccountNotFoundException("id")
