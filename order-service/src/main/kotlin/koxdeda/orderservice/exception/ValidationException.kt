@@ -13,5 +13,4 @@ class ValidationException(field: String): BaseException(
                 "Error when validate order parameters",
                 field))
             )
-        ) {
-}
+        )

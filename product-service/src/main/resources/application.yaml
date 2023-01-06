@@ -1,5 +1,5 @@
 kafka:
-  bootstrapAddress: localhost:29092
+  bootstrapAddress: localhost:29092 #change to kafka for docker
   topics:
     order-service-outbox: order-service-outbox
     product-service-outbox: product-service-outbox

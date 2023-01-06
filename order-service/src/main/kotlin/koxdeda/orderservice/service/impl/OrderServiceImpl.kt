@@ -6,12 +6,8 @@ import koxdeda.orderservice.dtos.OrderCreateDto
 import koxdeda.orderservice.dtos.enums.CurrencyType
 import koxdeda.orderservice.dtos.enums.OrderStatus
 import koxdeda.orderservice.exception.ValidationException
-import koxdeda.orderservice.feign.AccountServiceFeignClient
-import koxdeda.orderservice.feign.ClientServiceFeignClient
-import koxdeda.orderservice.feign.ProductServiceFeignClient
-import koxdeda.orderservice.feign.dtos.ClientDto
-import koxdeda.orderservice.model.Order
-import koxdeda.orderservice.model.toOrderDto
+import koxdeda.orderservice.feign.*
+import koxdeda.orderservice.model.*
 import koxdeda.orderservice.repository.OrderRepository
 import koxdeda.orderservice.service.OrderService
 import org.slf4j.LoggerFactory
@@ -43,9 +39,7 @@ class OrderServiceImpl(
     private val log = LoggerFactory.getLogger(javaClass)
     val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
 
-    // TODO добавить корутины
     override suspend fun createOrder(bearerToken: String, createOrder: OrderCreateDto): OrderDto  {
-
         createOrder.apply {
             if (checkOrderParams(bearerToken, createOrder) == true) {
                 log.info("Got response from coroutine")
@@ -71,33 +65,38 @@ class OrderServiceImpl(
             }
         }
     }
-
     suspend fun checkOrderParams(bearerToken: String, createOrder: OrderCreateDto) = coroutineScope {
-        log.info("Go to checkParams")
+        log.info("Go to check order params")
+
         createOrder.apply {
             log.info("Go to check product")
-            val isProductAvailable = async { productServiceFeignClient.getProduct(productSku!!, amount!!) }
+            val isProductAvailable = async {
+                delay(5000)
+                log.info("Product checked")
+                productServiceFeignClient.isInStock(productSku!!, amount!!)
+            }
+
             log.info("Go to check account")
             val balanceAvailable = async {
+                delay(5000)
+                log.info("Account checked")
                 accountServiceFeignClient.checkBalance(
                     clientId!!,
                     totalCost!!.toDouble(),
                     CurrencyType.RUR
                 )
             }
+
             log.info("Go to check client")
-            val isClientExists = async { clientServiceFeignClient.getClientById(bearerToken, clientId!!) }
+            val isClientExists = async {
+                delay(5000)
+                log.info("Client checked")
+                clientServiceFeignClient.getClientById(bearerToken, clientId!!)
+            }
 
-            return@coroutineScope isValidOrder(isProductAvailable.await(), balanceAvailable.await(), isClientExists.await())
-
+            return@coroutineScope isProductAvailable.await() && balanceAvailable.await() && isClientExists.await() != null
         }
     }
-    suspend fun isValidOrder(p: Boolean, a: Boolean, c: ClientDto?) = runBlocking {
-        return@runBlocking p && a && c != null
-    }
-
-
-
     fun sendOrderOutbox(message: Order) {
         try {
             log.info("Sending message to Kafka {}", message)
@@ -112,5 +111,4 @@ class OrderServiceImpl(
             log.error("Exception: $e")
         }
     }
-
 }
